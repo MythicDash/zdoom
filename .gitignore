@@ -4,6 +4,7 @@
 *.pdb
 *.ilk
 *.aps
+*.DS_Store
 /fmodapi*/
 /Release
 /wadsrc_wad
