@@ -38,7 +38,7 @@ if [ "$ok" == 1 ]; then
 
   cd $zDOOMTrueDir/zDOOM_files
 
-  $zDOOMTrueDir/zDOOM_files/zdoom -iwad doom.wad -file brutalv20b_hakchi.pk3 &> /media/zdoom.log #Please god just fucking work.
+  $zDOOMTrueDir/zDOOM_files/zdoom -iwad doom.wad -file brutalv20b_hakchi.pk3 +vid_drawfps 1 +snd_output ALSA &> /media/zdoom.log #Please god just fucking work.
 
   echo 3 > /proc/sys/vm/drop_caches #Clear down after ourselves...
 
