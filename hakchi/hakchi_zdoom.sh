@@ -28,22 +28,20 @@ if [ "$ok" == 1 ]; then
   #Dynamically link the SDL2.0 library on the mini
   [ ! -L /media/lib/libSDL2-2.0.so.0 ] && ln -sf "/usr/lib/libSDL2.so" "/media/lib/libSDL2-2.0.so.0"
 
-#Load in the extra libraries required to run on SNESC
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$zDOOMTrueDir/lib
-export LD_LIBRARY_PATH
+  #Load in the extra libraries required to run on SNESC
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$zDOOMTrueDir/lib
+  export LD_LIBRARY_PATH
 
-#Change the HOME environment variable for running on the mini...
-mkdir -p /var/lib/hakchi/rootfs/etc/zdoom
-export HOME="/var/lib/hakchi/rootfs/etc/zdoom"
+  #Change the HOME environment variable for running on the mini...
+  mkdir -p /var/lib/hakchi/rootfs/etc/zdoom
+  export HOME="/var/lib/hakchi/rootfs/etc/zdoom"
 
-cp /media/doom.wad /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom
-cp /media/brutalv20b.pk3 /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom
-cp -R /var/lib/hakchi/rootfs/etc/zdoom /media/zdoom
+  cd $zDOOMTrueDir/zDOOM_files
 
-cd $zDOOMTrueDir/zDOOM_files
+  $zDOOMTrueDir/zDOOM_files/zdoom -iwad doom.wad -file brutalv20b_hakchi.pk3 &> /media/zdoom.log #Please god just fucking work.
 
-$zDOOMTrueDir/zDOOM_files/zdoom -iwad doom.wad -file brutalv20b.pk3 &> /media/zdoom.log #Please god just fucking work.
+  echo 3 > /proc/sys/vm/drop_caches #Clear down after ourselves...
 
-echo 3 > /proc/sys/vm/drop_caches #Clear down after ourselves...
-
-/etc/init.d/S81clover-mcp start #Restart Clover UI and MCP
+  /etc/init.d/S81clover-mcp start #Restart Clover UI and MCP
+  
+fi
