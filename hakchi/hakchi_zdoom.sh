@@ -26,7 +26,7 @@ if [ "$ok" == 1 ]; then
   decodepng "$zDOOMTrueDir/Hakchi_zDOOM_assets/zDoomsplash-min.png" > /dev/fb0;
 
   #Dynamically link the SDL2.0 library on the mini
-  [ ! -L /media/lib/libSDL2-2.0.so.0 ] && ln -sf "/usr/lib/libSDL2.so" "/media/lib/libSDL2-2.0.so.0"
+  [ ! -L $zDOOMTrueDir/lib/libSDL2-2.0.so.0 ] && ln -sf "/usr/lib/libSDL2.so" "$zDOOMTrueDir/lib/libSDL2-2.0.so.0"
 
   #Load in the extra libraries required to run on SNESC
   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$zDOOMTrueDir/lib
