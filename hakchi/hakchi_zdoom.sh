@@ -35,10 +35,14 @@ if [ "$ok" == 1 ]; then
   #Change the HOME environment variable for running on the mini...
   mkdir -p /var/lib/hakchi/rootfs/etc/zdoom
   export HOME="/var/lib/hakchi/rootfs/etc/zdoom"
+  
+  if [ ! -f /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom.ini ]; then
+    cp $zDOOMTrueDir/zDOOM_files/zdoom.ini /var/lib/hakchi/rootfs/etc/zdoom/.config/
+  fi
 
   cd $zDOOMTrueDir/zDOOM_files
 
-  $zDOOMTrueDir/zDOOM_files/zdoom -iwad doom.wad -file brutalv20b_hakchi.pk3 +vid_drawfps 1 +snd_output ALSA &> /media/zdoom.log #Please god just fucking work.
+  $zDOOMTrueDir/zDOOM_files/zdoom -iwad doom.wad -file brutalv20b_hakchi.pk3 +vid_drawfps 1 +snd_output ALSA +snd_listdrivers +snd_listmididevices +snd_status &> /media/zdoom.log #Please god just fucking work.
 
   echo 3 > /proc/sys/vm/drop_caches #Clear down after ourselves...
 
