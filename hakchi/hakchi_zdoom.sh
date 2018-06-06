@@ -35,10 +35,12 @@ if [ "$ok" == 1 ]; then
   #Change the HOME environment variable for running on the mini...
   mkdir -p /var/lib/hakchi/rootfs/etc/zdoom
   mkdir -p /var/lib/hakchi/rootfs/etc/zdoom/.config #Pretty sure I can extend the line above but fuck it.
+  mkdir -p /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom #As above.
+  
   export HOME="/var/lib/hakchi/rootfs/etc/zdoom"
   
-  if [ ! -f /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom.ini ]; then
-    cp $zDOOMTrueDir/zDOOM_files/zdoom.ini /var/lib/hakchi/rootfs/etc/zdoom/.config/
+  if [ ! -f /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom/zdoom.ini ]; then
+    cp $zDOOMTrueDir/zDOOM_files/zdoom.ini /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom/
   fi
   
   chmod +x $zDOOMTrueDir/zDOOM_files/zdoom
