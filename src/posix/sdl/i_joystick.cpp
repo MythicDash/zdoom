@@ -1,3 +1,4 @@
+#ifndef CLOVER_CONTROLLER
 #include <SDL.h>
 
 #include "doomdef.h"
@@ -307,3 +308,4 @@ IJoystickConfig *I_UpdateDeviceList()
 {
 	return NULL;
 }
+#endif

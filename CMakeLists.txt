@@ -248,6 +248,11 @@ option(FORCE_INTERNAL_ZLIB "Use internal zlib")
 option(FORCE_INTERNAL_JPEG "Use internal jpeg")
 option(FORCE_INTERNAL_BZIP2 "Use internal bzip2")
 option(FORCE_INTERNAL_GME "Use internal gme")
+option( SNES_COMPILE "Add snes optimization options" YES )
+
+if ( SNES_COMPILE )
+	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -marm -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -DCLOVER_CONTROLLER" )
+endif()
 
 # Fast math flags, required by some subprojects
 set( ZD_FASTMATH_FLAG "" )
