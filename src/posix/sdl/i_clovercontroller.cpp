@@ -101,6 +101,7 @@ private:
 
 void I_StartupJoysticks()
 {
+	SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS,"1");
 	if(SDL_InitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) >= 0)
 	{
 		SDL_GameControllerAddMappingsFromFile("/etc/sdl2/gamecontrollerdb.txt");

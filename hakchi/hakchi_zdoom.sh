@@ -42,8 +42,6 @@ if [ "$ok" == 1 ]; then
 
   $zDOOMTrueDir/zDOOM_files/zdoom -iwad $zDOOMTrueDir/zDOOM_files/doom.wad -file $zDOOMTrueDir/zDOOM_files/brutalv20b_hakchi.pk3 +vid_fps 1 +snd_output ALSA +snd_listdrivers +snd_listmididevices +snd_status &> /media/zdoom.log #Please god just fucking work.
 
-  echo 3 > /proc/sys/vm/drop_caches #Clear down after ourselves...
-
-  /etc/init.d/S81clover-mcp start #Restart Clover UI and MCP
+  reboot
   
 fi
