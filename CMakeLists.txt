@@ -228,6 +228,13 @@ else()
 	endif()
 endif()
 
+option( SNES_COMPILE "Add snes optimization options" YES )
+
+if ( SNES_COMPILE )
+	set( ALL_C_FLAGS "${ALL_C_FLAGS} -marm -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard" )
+	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCLOVER_CONTROLLER" )
+endif()
+
 set( CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} ${REL_LINKER_FLAGS}" )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "${CMAKE_EXE_LINKER_FLAGS_MINSIZEREL} ${REL_LINKER_FLAGS}" )
 set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} ${REL_LINKER_FLAGS}" )
@@ -248,11 +255,6 @@ option(FORCE_INTERNAL_ZLIB "Use internal zlib")
 option(FORCE_INTERNAL_JPEG "Use internal jpeg")
 option(FORCE_INTERNAL_BZIP2 "Use internal bzip2")
 option(FORCE_INTERNAL_GME "Use internal gme")
-option( SNES_COMPILE "Add snes optimization options" YES )
-
-if ( SNES_COMPILE )
-	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -marm -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -DCLOVER_CONTROLLER" )
-endif()
 
 # Fast math flags, required by some subprojects
 set( ZD_FASTMATH_FLAG "" )
