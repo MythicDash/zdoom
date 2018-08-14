@@ -24,6 +24,9 @@ fi
 if [ "$ok" == 1 ]; then
 
   decodepng "$zDOOMTrueDir/Hakchi_zDOOM_assets/zDoomsplash-min.png" > /dev/fb0;
+  
+  # Display FMOD credit as per licence agreement
+  echo "FMOD Sound System, copyright Firelight Technologies Pty, Ltd., 1994-2011." > /dev/tty0
 
   #Load in the extra libraries required to run on SNESC
   export LD_LIBRARY_PATH=$zDOOMTrueDir/lib:$LD_LIBRARY_PATH
@@ -40,7 +43,7 @@ if [ "$ok" == 1 ]; then
   chmod +x $zDOOMTrueDir/zDOOM_files/zdoom
   cd $zDOOMTrueDir/zDOOM_files
 
-  $zDOOMTrueDir/zDOOM_files/zdoom -iwad $zDOOMTrueDir/zDOOM_files/doom.wad -file $zDOOMTrueDir/zDOOM_files/brutalv20b_hakchi.pk3 +vid_fps 1 +snd_output ALSA +snd_listdrivers +snd_listmididevices +snd_status &> /media/zdoom.log #Please god just fucking work.
+  $zDOOMTrueDir/zDOOM_files/zdoom -iwad $zDOOMTrueDir/zDOOM_files/doom.wad -file $zDOOMTrueDir/zDOOM_files/brutalv20b_hakchi.pk3 +vid_fps 1 +snd_output ALSA +snd_listdrivers +snd_listmididevices +snd_status #Please god just fucking work.
 
   reboot
   

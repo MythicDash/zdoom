@@ -5,6 +5,7 @@
 #include "m_joy.h"
 
 extern bool GUICapture;
+void MessagePump (const SDL_Event &sev);
 
 class SDLGameControllerManager
 {
@@ -92,7 +93,7 @@ public:
 		keyPressEvent.key.keysym.sym = keycode;
 		keyPressEvent.key.keysym.scancode = scancode;
 		keyPressEvent.key.keysym.mod = 0;
-		SDL_PushEvent(&keyPressEvent);
+		MessagePump(keyPressEvent);
 	}
 private:
 	std::list<SDL_GameController*> controllers;
