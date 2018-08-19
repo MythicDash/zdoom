@@ -2,10 +2,211 @@
 #include <SDL.h>
 #include <list>
 
+#include "doomdef.h"
+#include "d_event.h"
 #include "m_joy.h"
 
-extern bool GUICapture;
-void MessagePump (const SDL_Event &sev);
+const short buttonValues[18] = { KEY_PAD_A, KEY_PAD_B, KEY_PAD_X, KEY_PAD_Y, KEY_PAD_BACK, 0, KEY_PAD_START, KEY_PAD_LTHUMB, KEY_PAD_RTHUMB, KEY_PAD_LSHOULDER, KEY_PAD_RSHOULDER, KEY_PAD_DPAD_UP, KEY_PAD_DPAD_DOWN, KEY_PAD_DPAD_LEFT, KEY_PAD_DPAD_RIGHT, 0, KEY_PAD_LTRIGGER, KEY_PAD_RTRIGGER };
+
+struct SDLGameControllerJoyStick : public IJoystickConfig
+{
+	SDLGameControllerJoyStick(SDL_GameController* controller, int index) : controller(controller), index(index), scale(1.0f)
+	{
+		SetDefaultConfig();
+	}
+	
+	~SDLGameControllerJoyStick()
+	{
+		M_SaveJoystickConfig(this);
+	}
+	
+	FString GetName()
+	{
+		return SDL_GameControllerName(controller);
+	}
+	
+	float GetSensitivity()
+	{
+		return scale;
+	}
+	
+	void SetSensitivity(float scale)
+	{
+		this->scale = scale;
+	}
+
+	int GetNumAxes()
+	{
+		return 4;
+	}
+	
+	float GetAxisDeadZone(int axis)
+	{
+		return axes[axis].deadZone;
+	}
+	
+	EJoyAxis GetAxisMap(int axis)
+	{
+		return axes[axis].gameAxis;
+	}
+	
+	const char *GetAxisName(int axis)
+	{
+		return axes[axis].name.GetChars();
+	}
+	
+	float GetAxisScale(int axis)
+	{
+		return axes[axis].scale;
+	}
+
+	void SetAxisDeadZone(int axis, float zone)
+	{
+		axes[axis].deadZone = zone;
+	}
+	
+	void SetAxisMap(int axis, EJoyAxis gameaxis)
+	{
+		axes[axis].gameAxis = gameaxis;
+	}
+	
+	void SetAxisScale(int axis, float scale)
+	{
+		axes[axis].scale = scale;
+	}
+
+	bool IsSensitivityDefault()
+	{
+		return scale == 1.0f;
+	}
+	
+	bool IsAxisDeadZoneDefault(int axis)
+	{
+		return axes[axis].deadZone == defaultAxes[axis].deadZone;
+	}
+	
+	bool IsAxisMapDefault(int axis)
+	{
+		return axes[axis].gameAxis == defaultAxes[axis].gameAxis;
+	}
+	
+	bool IsAxisScaleDefault(int axis)
+	{
+		return axes[axis].scale == 1.0f;
+	}
+
+	void SetDefaultConfig()
+	{
+		for(int i = 0; i < 4; ++i)
+			axes[i] = defaultAxes[i];
+	}
+	
+	FString GetIdentifier()
+	{
+		char id[16];
+		mysnprintf(id, countof(id), "GC:%d", index);
+		return id;
+	}
+	
+	void ProcessInput()
+	{
+		for(int i = 0; i < 4; ++i)
+			axes[i].value = Joy_RemoveDeadZone(SDL_GameControllerGetAxis(controller,(SDL_GameControllerAxis)i)/32767.0f, axes[i].deadZone, NULL);
+	}
+	
+	void AddAxes(float g_axes[NUM_JOYAXIS])
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			if(axes[i].gameAxis != JOYAXIS_None)
+				g_axes[axes[i].gameAxis] -= float(axes[i].value * scale * axes[i].scale);
+		}
+	}
+	
+	struct Axis
+	{
+		FString name;
+		EJoyAxis gameAxis;
+		float deadZone;
+		float scale;
+		float value;
+	};
+private:
+	Axis axes[4];
+	static const Axis defaultAxes[4];
+	SDL_GameController* controller;
+	int index;
+	float scale;
+};
+const SDLGameControllerJoyStick::Axis SDLGameControllerJoyStick::defaultAxes[4] = {{"Left Stick X", JOYAXIS_Side, 0.000001f, 1.0f},
+						{"Left Stick Y", JOYAXIS_Forward, 0.000001f, 1.0f},
+						{"Right Stick X", JOYAXIS_Yaw, 0.000001f, 1.0f},
+						{"Right Stick Y", JOYAXIS_Pitch, 0.000001f, 1.0f}};
+
+class SDLGameController
+{
+public:
+	SDLGameController(int id)
+	{
+		controller = SDL_GameControllerOpen(id);
+		axisCount = SDL_JoystickNumAxes(SDL_GameControllerGetJoystick(controller));
+		if(axisCount >= 4)
+			joystick = new SDLGameControllerJoyStick(controller, id);
+		else
+			joystick = nullptr;
+	}
+	
+	~SDLGameController()
+	{
+		if(joystick)
+			delete joystick;
+		SDL_GameControllerClose(controller);
+	}
+	
+	void ProcessInput()
+	{
+		for(int i = 0; i < 16; ++i)
+			processButtonState(SDL_GameControllerGetButton(controller, (SDL_GameControllerButton)i), buttonState[i], i);
+		
+		if(joystick)
+		{
+			if(axisCount >= 6)
+			{
+				processButtonState(SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT), buttonState[16], 16);
+				processButtonState(SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT), buttonState[17], 17);
+			}
+			joystick->ProcessInput();
+		}
+	}
+	
+	void AddAxes(float axes[NUM_JOYAXIS])
+	{
+		if(joystick)
+			joystick->AddAxes(axes);
+	}
+	
+	SDLGameControllerJoyStick* GetJoystick()
+	{
+		return joystick;
+	}
+private:
+	SDL_GameController* controller;
+	SDLGameControllerJoyStick* joystick;
+	int axisCount;
+	bool buttonState[18] = { 0 };
+	
+	void processButtonState(bool newState, bool & oldState, int buttonId)
+	{
+		if(newState != oldState)
+		{
+			event_t event = { newState ? EV_KeyDown : EV_KeyUp, 0, buttonValues[buttonId] };
+			if(event.data1 != 0)
+				D_PostEvent(&event);
+			
+			oldState = newState;
+		}
+	}
+};
 
 class SDLGameControllerManager
 {
@@ -16,87 +217,43 @@ public:
 		{
 			if (SDL_IsGameController(i))
 			{
-				controllers.push_back(SDL_GameControllerOpen(i));
+				controllers.push_back(new SDLGameController(i));
 			}
 		}
 	}
 	
 	~SDLGameControllerManager()
 	{
-		for(auto controller : controllers)
+		for(auto & controller : controllers)
+			delete controller;
+	}
+	
+	void ProcessInput()
+	{
+		for(auto & controller : controllers)
+			controller->ProcessInput();
+	}
+	
+	void GetJoysticks(TArray<IJoystickConfig *> &sticks)
+	{
+		for(auto & controller : controllers)
 		{
-			SDL_GameControllerClose(controller);
+			auto joystick = controller->GetJoystick();
+			if(joystick)
+			{
+				M_LoadJoystickConfig(joystick);
+				sticks.Push(joystick);
+			}
 		}
 	}
 	
-	void ProcessEvent(const SDL_Event &sev)
+	void AddAxes(float axes[NUM_JOYAXIS])
 	{
-		SDL_Keycode keycode;
-		SDL_Scancode scancode;
-		
-		switch(sev.cbutton.button)
-		{
-		case SDL_CONTROLLER_BUTTON_DPAD_UP:
-			keycode = SDLK_UP;
-			scancode = SDL_SCANCODE_UP;
-			break;
-		case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-			keycode = SDLK_DOWN;
-			scancode = SDL_SCANCODE_DOWN;
-			break;
-		case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-			keycode = SDLK_LEFT;
-			scancode = SDL_SCANCODE_LEFT;
-			break;
-		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-			keycode = SDLK_RIGHT;
-			scancode = SDL_SCANCODE_RIGHT;
-			break;
-		case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
-			keycode = SDLK_l;
-			scancode = SDL_SCANCODE_L;
-			break;
-		case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
-			keycode = SDLK_r;
-			scancode = SDL_SCANCODE_R;
-			break;
-		case SDL_CONTROLLER_BUTTON_START:
-			keycode = SDLK_ESCAPE;
-			scancode = SDL_SCANCODE_ESCAPE;
-			break;
-		case SDL_CONTROLLER_BUTTON_BACK:
-			keycode = SDLK_BACKSPACE;
-			scancode = SDL_SCANCODE_BACKSPACE;
-			break;
-		case SDL_CONTROLLER_BUTTON_A:
-			keycode = (GUICapture) ? SDLK_RETURN : SDLK_a;
-			scancode = (GUICapture) ? SDL_SCANCODE_RETURN : SDL_SCANCODE_A;
-			break;
-		case SDL_CONTROLLER_BUTTON_B:
-			keycode = SDLK_b;
-			scancode = SDL_SCANCODE_B;
-			break;
-		case SDL_CONTROLLER_BUTTON_X:
-			keycode = SDLK_x;
-			scancode = SDL_SCANCODE_X;
-			break;
-		case SDL_CONTROLLER_BUTTON_Y:
-			keycode = SDLK_y;
-			scancode = SDL_SCANCODE_Y;
-			break;
-		default:
-			return;
-		}
-		
-		SDL_Event keyPressEvent;
-		keyPressEvent.type = (sev.type == SDL_CONTROLLERBUTTONDOWN) ? SDL_KEYDOWN : SDL_KEYUP;
-		keyPressEvent.key.keysym.sym = keycode;
-		keyPressEvent.key.keysym.scancode = scancode;
-		keyPressEvent.key.keysym.mod = 0;
-		MessagePump(keyPressEvent);
+		for(auto & controller : controllers)
+			controller->AddAxes(axes);
 	}
 private:
-	std::list<SDL_GameController*> controllers;
+	std::list<SDLGameController*> controllers;
 } static *GameControllerManager;
 
 
@@ -121,20 +278,21 @@ void I_ShutdownJoysticks()
 void I_GetJoysticks(TArray<IJoystickConfig *> &sticks)
 {
 	sticks.Clear();
+	GameControllerManager->GetJoysticks(sticks);
 }
 
 void I_GetAxes(float axes[NUM_JOYAXIS])
 {
 	memset(axes, 0, sizeof(float)*NUM_JOYAXIS);
+	if (use_joystick)
+		GameControllerManager->AddAxes(axes);
 }
 
-void I_ProcessGameControllerEvent(const SDL_Event &sev)
+void I_ProcessJoysticks()
 {
 	if(GameControllerManager)
-		GameControllerManager->ProcessEvent(sev);
+		GameControllerManager->ProcessInput();
 }
-
-void I_ProcessJoysticks() {}
 
 IJoystickConfig *I_UpdateDeviceList()
 {

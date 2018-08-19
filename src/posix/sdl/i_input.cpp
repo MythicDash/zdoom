@@ -259,9 +259,6 @@ static void I_CheckNativeMouse ()
 	}
 }
 
-#ifdef CLOVER_CONTROLLER
-void I_ProcessGameControllerEvent(const SDL_Event &sev);
-#endif
 void MessagePump (const SDL_Event &sev)
 {
 	static int lastx = 0, lasty = 0;
@@ -354,12 +351,6 @@ void MessagePump (const SDL_Event &sev)
 			D_PostEvent (&event);
 		}
 		break;
-#ifdef CLOVER_CONTROLLER
-	case SDL_CONTROLLERBUTTONDOWN:
-	case SDL_CONTROLLERBUTTONUP:
-		I_ProcessGameControllerEvent(sev);
-		break;
-#endif
 	case SDL_KEYDOWN:
 	case SDL_KEYUP:
 		if (!GUICapture)
