@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Exec=/bin/sh /usr/share/games/CLV-Z-HAKCHI_ZDOOM/hakchi_zdoom.sh
-Path=/var/lib/clover/profiles/0/CLV-Z-HAKCHI_ZDOOM
+Exec=/bin/sh /var/games/CLV-Z-HAKCHI_ZDOOM/hakchi_zdoom.sh
+Path=/var/saves/CLV-Z-HAKCHI_ZDOOM
 Name=Hakchi zDOOM
 Icon=/var/games/CLV-Z-HAKCHI_ZDOOM/CLV-Z-HAKCHI_ZDOOM.png
 
