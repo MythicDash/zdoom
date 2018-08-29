@@ -43,7 +43,7 @@ if [ "$ok" == 1 ]; then
   chmod +x $zDOOMTrueDir/zDOOM_files/zdoom
   cd $zDOOMTrueDir/zDOOM_files
 
-  $zDOOMTrueDir/zDOOM_files/zdoom -iwad $zDOOMTrueDir/zDOOM_files/doom.wad -file $zDOOMTrueDir/zDOOM_files/brutalv20b_hakchi.pk3 +vid_fps 1 +snd_output ALSA +snd_listdrivers +snd_listmididevices +snd_status #Please god just fucking work.
+  $zDOOMTrueDir/zDOOM_files/zdoom -iwad $zDOOMTrueDir/zDOOM_files/doom.wad -file $zDOOMTrueDir/zDOOM_files/brutalv20b_hakchi.pk3 $zDOOMTrueDir/zDOOM_files/IDKFAv2.wad +vid_fps 1 +snd_output ALSA +snd_listdrivers +snd_listmididevices +snd_status #Please god just fucking work.
 
   reboot
   
