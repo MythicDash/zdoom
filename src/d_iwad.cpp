@@ -517,12 +517,12 @@ int FIWadManager::IdentifyVersion (TArray<FString> &wadfiles, const char *iwad, 
 					  "2. Edit your " GAMENAMELOWERCASE "-username.ini and add the directories of your iwads\n"
 					  "to the list beneath [IWADSearch.Directories]");
 #elif defined(__APPLE__)
-					  "1. Place one or more of these wads in /var/lib/hakchi/rootfs/etc/zdoom/Library/Application Support/" GAMENAMELOWERCASE "/\n"
-					  "2. Edit your /var/lib/hakchi/rootfs/etc/zdoom/Library/Preferences/" GAMENAMELOWERCASE ".ini and add the directories\n"
+					  "1. Place one or more of these wads in /var/saves/CLV-Z-HAKCHI_ZDOOM/Library/Application Support/" GAMENAMELOWERCASE "/\n"
+					  "2. Edit your /var/saves/CLV-Z-HAKCHI_ZDOOM/Library/Preferences/" GAMENAMELOWERCASE ".ini and add the directories\n"
 					  "of your iwads to the list beneath [IWADSearch.Directories]");
 #else
-					  "1. Place one or more of these wads in /var/lib/hakchi/rootfs/etc/zdoom/.config/" GAMENAMELOWERCASE "/.\n"
-					  "2. Edit your /var/lib/hakchi/rootfs/etc/zdoom/.config/" GAMENAMELOWERCASE "/" GAMENAMELOWERCASE ".ini and add the directories of your\n"
+					  "1. Place one or more of these wads in /var/saves/CLV-Z-HAKCHI_ZDOOM/.config/" GAMENAMELOWERCASE "/.\n"
+					  "2. Edit your /var/saves/CLV-Z-HAKCHI_ZDOOM/.config/" GAMENAMELOWERCASE "/" GAMENAMELOWERCASE ".ini and add the directories of your\n"
 					  "iwads to the list beneath [IWADSearch.Directories]");
 #endif
 	}

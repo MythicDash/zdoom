@@ -46,30 +46,30 @@ FString GetUserFile (const char *file)
 	FString path;
 	struct stat info;
 
-	path = NicePath("/var/lib/hakchi/rootfs/etc/zdoom/" GAME_DIR "/");
+	path = NicePath("/var/saves/CLV-Z-HAKCHI_ZDOOM/" GAME_DIR "/");
 
 	if (stat (path, &info) == -1)
 	{
 		struct stat extrainfo;
 
-		// Sanity check for /var/lib/hakchi/rootfs/etc/zdoom/.config
-		FString configPath = NicePath("/var/lib/hakchi/rootfs/etc/zdoom/.config/");
+		// Sanity check for /var/saves/CLV-Z-HAKCHI_ZDOOM/.config
+		FString configPath = NicePath("/var/saves/CLV-Z-HAKCHI_ZDOOM/.config/");
 		if (stat (configPath, &extrainfo) == -1)
 		{
 			if (mkdir (configPath, S_IRUSR | S_IWUSR | S_IXUSR) == -1)
 			{
-				I_FatalError ("Failed to create /var/lib/hakchi/rootfs/etc/zdoom/.config directory:\n%s", strerror(errno));
+				I_FatalError ("Failed to create /var/saves/CLV-Z-HAKCHI_ZDOOM/.config directory:\n%s", strerror(errno));
 			}
 		}
 		else if (!S_ISDIR(extrainfo.st_mode))
 		{
-			I_FatalError ("/var/lib/hakchi/rootfs/etc/zdoom/.config must be a directory");
+			I_FatalError ("/var/saves/CLV-Z-HAKCHI_ZDOOM/.config must be a directory");
 		}
 
 		// This can be removed after a release or two
 		// Transfer the old zdoom directory to the new location
 		bool moved = false;
-		FString oldpath = NicePath("/var/lib/hakchi/rootfs/etc/zdoom/." GAMENAMELOWERCASE "/");
+		FString oldpath = NicePath("/var/saves/CLV-Z-HAKCHI_ZDOOM/." GAMENAMELOWERCASE "/");
 		if (stat (oldpath, &extrainfo) != -1)
 		{
 			if (rename(oldpath, path) == -1)
@@ -110,7 +110,7 @@ FString M_GetCachePath(bool create)
 {
 	// Don't use GAME_DIR and such so that ZDoom and its child ports can
 	// share the node cache.
-	FString path = NicePath("/var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom/cache");
+	FString path = NicePath("/var/saves/CLV-Z-HAKCHI_ZDOOM/.config/zdoom/cache");
 	if (create)
 	{
 		CreatePath(path);
@@ -143,7 +143,7 @@ FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
 
-	// Check first in /var/lib/hakchi/rootfs/etc/zdoom/.config/zdoom/botfilename.
+	// Check first in /var/saves/CLV-Z-HAKCHI_ZDOOM/.config/zdoom/botfilename.
 	path = GetUserFile(botfilename);
 	if (!FileExists(path))
 	{
@@ -183,7 +183,7 @@ FString M_GetConfigPath(bool for_reading)
 
 FString M_GetScreenshotsPath()
 {
-	return NicePath("/var/lib/hakchi/rootfs/etc/zdoom/" GAME_DIR "/screenshots/");
+	return NicePath("/var/saves/CLV-Z-HAKCHI_ZDOOM/" GAME_DIR "/screenshots/");
 }
 
 //===========================================================================
@@ -196,5 +196,5 @@ FString M_GetScreenshotsPath()
 
 FString M_GetSavegamesPath()
 {
-	return NicePath("/var/lib/hakchi/rootfs/etc/zdoom/" GAME_DIR);
+	return NicePath("/var/saves/CLV-Z-HAKCHI_ZDOOM/" GAME_DIR);
 }

@@ -106,7 +106,7 @@ FGameConfigFile::FGameConfigFile ()
 		}
 		else
 		{
-			SetValueForKey("Path", "/var/lib/hakchi/rootfs/etc/zdoom/" GAME_DIR, true);
+			SetValueForKey("Path", "/var/saves/CLV-Z-HAKCHI_ZDOOM" GAME_DIR, true);
 		}
 		if (noErr == FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &folder) &&
 			noErr == FSRefMakePath(&folder, (UInt8*)cpath, PATH_MAX))
@@ -125,7 +125,7 @@ FGameConfigFile::FGameConfigFile ()
 		SetValueForKey ("Path", "$HOME", true);
 		SetValueForKey ("Path", "$PROGDIR", true);
 #else
-		SetValueForKey ("Path", "/var/lib/hakchi/rootfs/etc/zdoom/" GAME_DIR, true);
+		SetValueForKey ("Path", "/var/saves/CLV-Z-HAKCHI_ZDOOM" GAME_DIR, true);
 		// Arch Linux likes them in /usr/share/doom
 		// Debian likes them in /usr/share/games/doom
 		// I assume other distributions don't do anything radically different
@@ -148,7 +148,7 @@ FGameConfigFile::FGameConfigFile ()
 #elif !defined(__unix__)
 		SetValueForKey ("Path", "$PROGDIR", true);
 #else
-		SetValueForKey ("Path", "/var/lib/hakchi/rootfs/etc/zdoom/" GAME_DIR, true);
+		SetValueForKey ("Path", "/var/saves/CLV-Z-HAKCHI_ZDOOM" GAME_DIR, true);
 		SetValueForKey ("Path", SHARE_DIR, true);
 #endif
 		SetValueForKey ("Path", "$DOOMWADDIR", true);
