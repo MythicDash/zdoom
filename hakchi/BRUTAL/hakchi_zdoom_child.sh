@@ -5,8 +5,7 @@ source /etc/preinit
 script_init
 
 zDOOMTrueDir="$(dirname `readlink -f "$0"`)"
-HOME="/var/saves/CLV-Z-HAKCHI_ZDOOM"
-wad="$(ls "$zDOOMTrueDir/zDOOM_files" | grep -i "doom.wad")"
+HOME="/var/saves/CLV-Z-HAKCHI_BRUTAL"
 
 while [ $# -gt 0 ]; do
   touch /tmp/vars
@@ -27,6 +26,10 @@ echo "-----------" >> /tmp/vars
 [ ! -z $cmd_fps ] && extra_params="$extra_params +vid_fps 1"
 [ ! -z $cmd_pos ] && extra_params="$extra_params +idmypos 1"
 [ ! -z $cmd_mpname ] && extra_params="$extra_params +name \"$cmd_mpname\""
+[ ! -z $cmd_idkfa ] && idkfa="IDKFAv2.wad"
+
+#Process base WAD (load defined WAD or load doom.wad as default)
+[ ! -z $cmd_basewad ] && wad="$(ls "$zDOOMTrueDir/zDOOM_files" | grep -i "$cmd_basewad")" || wad="$(ls "$zDOOMTrueDir/zDOOM_files" | grep -i "doom.wad")" && idkfa="IDKFAv2.wad"
 
 touch /tmp/extra
 echo "-----------" >> /tmp/extra
@@ -54,8 +57,8 @@ if [ ! -z "$wad" ]; then
   
   chmod +x "$zDOOMTrueDir/zDOOM_files/zdoom"
   cd "$zDOOMTrueDir/zDOOM_files"
-
-  ./zdoom -iwad $wad -file brutalv20b_hakchi.pk3 IDKFAv2.wad $extra_params
+  
+  ./zdoom -iwad $wad -file brutalv20b_hakchi.pk3 $idkfa $extra_params
     
 fi
 

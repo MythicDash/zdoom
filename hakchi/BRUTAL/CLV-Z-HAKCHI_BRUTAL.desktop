@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+Exec=/bin/sh /var/games/CLV-Z-HAKCHI_BRUTAL/hakchi_zdoom.sh
+Path=/var/saves/CLV-Z-HAKCHI_BRUTAL
+Name=Hakchi BRUTAL DOOM
+Icon=/var/games/CLV-Z-HAKCHI_BRUTAL/CLV-Z-HAKCHI_BRUTAL.png
+
+[X-CLOVER Game]
+Code=CLV-Z-HAKCHI_BRUTAL
+TestID=777
+ID=0
+Players=1
+Simultaneous=0
+ReleaseDate=2018-01-01
+SaveCount=0
+SortRawTitle=_hakchi HAKCHI_BRUTAL
+SortRawPublisher=SWINGFLIP
+Copyright=Swingflip 2018
