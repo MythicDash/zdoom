@@ -351,8 +351,20 @@ void MessagePump (const SDL_Event &sev)
 			D_PostEvent (&event);
 		}
 		break;
-	case SDL_KEYDOWN:
 	case SDL_KEYUP:
+#ifdef CLOVER_CONTROLLER
+		if (sev.key.keysym.scancode == SDL_SCANCODE_POWER)
+		{
+			system("gameover");
+			break;
+		}
+		else if (sev.key.keysym.scancode == SDL_SCANCODE_VOLUMEUP)
+		{
+			I_Quit();
+			break;
+		}
+#endif
+	case SDL_KEYDOWN:
 		if (!GUICapture)
 		{
 			event.type = sev.type == SDL_KEYDOWN ? EV_KeyDown : EV_KeyUp;
