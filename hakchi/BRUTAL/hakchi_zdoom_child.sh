@@ -5,7 +5,7 @@ source /etc/preinit
 script_init
 
 zDOOMTrueDir="$(dirname `readlink -f "$0"`)"
-HOME="/var/saves/CLV-Z-HAKCHI_BRUTAL"
+HOME="/var/saves/CLV-Z-HAKCHI_ZDOOM"
 
 while [ $# -gt 0 ]; do
   touch /tmp/vars
